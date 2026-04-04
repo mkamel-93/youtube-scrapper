@@ -1,0 +1,113 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "mkamelmasoud/composer.script",
+    "description": "Custom dev scripts for my Laravel project",
+    "type": "library",
+    "license": "MIT",
+    "scripts": {
+        "deploy:optimize-app": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Optimizing application...'",
+            "@php artisan optimize:clear",
+            "@php artisan optimize",
+            "@php artisan queue:restart || echo 'Queue not running, skipping restart...'"
+        ],
+
+        "reset:backend": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Refreshing Backend Environment'",
+            "rm -rf vendor/",
+            "composer run-script check-directories",
+            "echo 'Installing Composer dependencies...'",
+            "COMPOSER=composer.json composer install",
+            "@reset:ide-helper"
+        ],
+        "reset:data": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Resetting Database'",
+            "@php artisan migrate:fresh --seed",
+            "@php artisan tinker --execute='\\Illuminate\\Support\\Facades\\Redis::flushall()'"
+        ],
+        "reset:ide-helper": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Generating IDE helper files...'",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:models --nowrite",
+            "@php artisan ide-helper:meta"
+        ],
+        "update:vendor": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Upgrade Backend Environment'",
+            "COMPOSER=composer.json composer update",
+            "@reset:ide-helper"
+        ],
+
+        "full:test": [
+            "@php artisan optimize:clear",
+            "@check:composer-strict",
+            "@test:infrastructure",
+            "@test:pint",
+            "@test:phpstan",
+            "@test:phpunit-coverage"
+        ],
+
+        "check:composer-strict": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Validating Composer dependencies...'",
+            "COMPOSER=composer.json composer validate --strict",
+            "COMPOSER=composer.script.json composer validate"
+        ],
+        "check-directories": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Ensuring required directories and databases exist...'",
+            "@php -r \"@mkdir('bootstrap/cache', 0775, true);\"",
+            "@php -r \"touch('bootstrap/cache/.gitkeep');\"",
+            "@php -r \"@mkdir('storage/app/public', 0775, true);\"",
+            "@php -r \"@mkdir('storage/app/private', 0775, true);\"",
+            "@php -r \"@mkdir('storage/logs', 0775, true);\"",
+            "@php -r \"touch('storage/logs/.gitkeep');\"",
+            "@php -r \"@mkdir('storage/.dump/.phpstan.cache', 0775, true);\"",
+            "@php -r \"@mkdir('storage/.dump/.phpunit.cache/.cache', 0775, true);\"",
+            "@php -r \"@mkdir('storage/framework/views', 0775, true);\"",
+            "@php -r \"touch('storage/framework/views/.gitkeep');\"",
+            "@php -r \"@mkdir('storage/framework/cache/data', 0775, true);\"",
+            "@php -r \"touch('storage/framework/cache/data/.gitkeep');\"",
+            "@php -r \"@mkdir('storage/framework/sessions', 0775, true);\"",
+            "@php -r \"touch('storage/framework/sessions/.gitkeep');\"",
+            "@php -r \"@mkdir('database', 0775, true);\""
+        ],
+
+        "fix:pint": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Running Pint Fix...'",
+            "@php vendor/bin/pint --parallel"
+        ],
+        "test:infrastructure": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "@php artisan optimize:clear",
+            "@php .github/scripts/ci-tests.php all"
+        ],
+        "test:pint": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Running Pint Test...'",
+            "@php vendor/bin/pint --parallel --test"
+        ],
+        "test:phpstan": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "echo 'Running PHPStan tests...'",
+            "@php vendor/bin/phpstan clear-result-cache --configuration=phpstan.neon",
+            "@php vendor/bin/phpstan analyse --configuration=phpstan.neon --memory-limit=2G"
+        ],
+        "test:phpunit-coverage": [
+            "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'",
+            "@php artisan test -c phpunit.xml --coverage --min=90"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": true
+        }
+    }
+}

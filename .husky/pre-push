@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+echo "[Step 2: Check Before Push] Running Pint and Blade format checks..."
+
+# Configuration
+COMPOSE_FILE=".docker/docker-compose.yml"
+
+# If docker is installed AND the compose file exists, use Docker Mode.
+if command -v docker >/dev/null 2>&1 && [ -f "$COMPOSE_FILE" ]; then
+   echo "Running in Docker Mode..."
+
+   COMPOSE="docker compose -f $COMPOSE_FILE --project-directory ."
+
+   # .Test Laravel Pint (Formatting)
+   $COMPOSE exec -T php sh -c 'COMPOSER=composer.script.json composer run-script test:pint'
+
+else
+   echo "Running in Local Mode..."
+
+   # .Test Laravel Pint (Formatting)
+   COMPOSER=composer.script.json composer run-script test:pint
+
+fi
+
+echo "Analysis passed! Pushing code..."

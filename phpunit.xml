@@ -3,6 +3,9 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
+         stopOnError="true"
+         stopOnFailure="true"
+         cacheDirectory="storage/.dump/.phpunit.cache"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -12,23 +15,43 @@
             <directory>tests/Feature</directory>
         </testsuite>
     </testsuites>
+
+    <!-- Source files -->
     <source>
         <include>
-            <directory>app</directory>
+            <directory suffix=".php">app</directory>
         </include>
     </source>
+
+    <!-- Code coverage configuration -->
+    <coverage>
+        <report>
+            <!-- HTML report (for humans) -->
+            <!-- <html outputDirectory="storage/.dump/.coverage/html"/>-->
+
+            <!-- XML report (for CI tools) -->
+            <cobertura outputFile="storage/.dump/.coverage/coverage.xml"/>
+        </report>
+    </coverage>
+
     <php>
+        <env name="APP_NAME" value="youtube-scrapper-testing"/>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_URL" value="http://127.0.0.1:8000"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
-        <env name="CACHE_STORE" value="array"/>
+
         <env name="DB_CONNECTION" value="sqlite"/>
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="DB_URL" value=""/>
+
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="CACHE_STORE" value="array"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
+
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>

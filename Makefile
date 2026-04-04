@@ -10,11 +10,10 @@ COMPOSE_CMD = docker compose \
  	--project-directory . \
 	--project-name $$(val=$$(grep -m1 '^DOCKER_APP_NAME=' $(ROOT_ENV) | cut -d'=' -f2-); echo $${val:-mostafa-project})
 
-.PHONY: symlink init-env sync-env pma-setup destroy build rebuild-container build-project \
-        up down restart conf ps php-bash web-bash database-bash database-import \
-        logs logs-watch log-php test test-pint test-phpstan \
-        test-phpunit-coverage reset-ide-helper reset-data fix-pint-and-blade \
-        test-dusk-all test-dusk-staff
+.PHONY: symlink init-env sync-env pma-setup destroy build rebuild-container \
+        build-project up down restart conf ps php-bash web-bash logs \
+        logs-watch log-php reset-ide-helper reset-data fix-pint-and-blade \
+        test test-pint test-phpstan test-phpunit-coverage
 
 # Load environment variables from .env if it exists
 -include .env
@@ -89,10 +88,6 @@ php-bash: sync-env
 	$(COMPOSE_CMD) exec --user www-data php bash
 web-bash: sync-env
 	$(COMPOSE_CMD) exec --user nginx web bash
-database-bash: sync-env
-	$(COMPOSE_CMD) exec database bash -c 'mysql -u$$MYSQL_USER -p$$MYSQL_PASSWORD'
-database-import: sync-env
-	$(COMPOSE_CMD) exec -T database bash -c 'mysql -u$$MYSQL_USER -p$$MYSQL_PASSWORD -e "DROP DATABASE IF EXISTS $$MYSQL_DATABASE; CREATE DATABASE $$MYSQL_DATABASE;" && mysql -u$$MYSQL_USER -p$$MYSQL_PASSWORD $$MYSQL_DATABASE' < storage/.dump/db/init.sql
 
 logs: sync-env
 	$(COMPOSE_CMD) logs
@@ -122,9 +117,3 @@ test-phpstan: sync-env
 
 test-phpunit-coverage: sync-env
 	$(COMPOSE_CMD) exec -T --user www-data php sh -c 'COMPOSER=composer.script.json composer run-script test:phpunit-coverage'
-
-test-dusk-all: sync-env
-	$(COMPOSE_CMD) exec -T --user www-data php sh -c 'COMPOSER=composer.script.json composer run-script test:dusk:all'
-
-test-dusk-staff: sync-env
-	$(COMPOSE_CMD) exec -T --user www-data php sh -c 'COMPOSER=composer.script.json composer run-script test:dusk:staff'

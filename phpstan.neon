@@ -1,0 +1,55 @@
+includes:
+    - ./vendor/nesbot/carbon/extension.neon
+    - ./vendor/larastan/larastan/extension.neon
+    - ./vendor/phpstan/phpstan-mockery/extension.neon
+
+parameters:
+
+    paths:
+        - app/
+        - bootstrap/
+        - config/
+        - database/
+        - routes/
+
+    # Exclude generated and runtime files (optional if they don't exist)
+    excludePaths:
+        - ./_ide_helper.php (?)
+        - ./_ide_helper_models.php (?)
+        - ./vendor/_laravel_ide/*
+        - ./storage/*
+        - ./bootstrap/cache/*
+        - ./public/build/*
+        - ./node_modules/*
+
+    # Level 7 is a strong choice for type safety
+    level: 7
+
+    # Cache directory for faster subsequent runs
+    tmpDir: ./storage/.dump/.phpstan.cache
+
+    # Larastan / PHPStan options (Laravel 12 compatible)
+    # checkModelProperties: true # Enhanced Eloquent checking
+    checkUninitializedProperties: true
+    checkMissingVarTagTypehint: true
+    checkDynamicProperties: false
+
+    # PHP 8.2+ checks
+    checkNullables: true
+    checkThisOnly: false
+
+    # Parallel processing for faster analysis
+    parallel:
+        jobSize: 20
+        maximumNumberOfProcesses: 4
+        processTimeout: 60.0
+
+    # Memory and performance
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: true
+
+    # Ignore common Laravel patterns that PHPStan doesn't understand well
+    ignoreErrors:
+        - '#Class App\\Livewire\\.* has an uninitialized property \$form\. Give it default value or assign it in the constructor\.#'
+        - '#Access to constant ATTR_SSL_CA on an unknown class Pdo\\Mysql\.#'
+        - '#Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition::onDelete\(\)#'

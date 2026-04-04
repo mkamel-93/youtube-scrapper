@@ -1,0 +1,48 @@
+#!/bin/sh
+
+set -e
+
+echo "[Step 1: Format] Fixing style and line endings..."
+
+# Configuration
+COMPOSE_FILE=".docker/docker-compose.yml"
+
+# If docker is installed AND the compose file exists, use Docker Mode.
+if command -v docker >/dev/null 2>&1 && [ -f "$COMPOSE_FILE" ]; then
+   echo "Running in Docker Mode..."
+
+   COMPOSE="docker compose -f $COMPOSE_FILE --project-directory ."
+
+   # .Fix Laravel Pint (Formatting)
+   $COMPOSE exec -T --user www-data php sh -c 'COMPOSER=composer.script.json composer run-script fix:pint'
+
+   # .Test PHPStan
+   $COMPOSE exec -T --user www-data php sh -c 'COMPOSER=composer.script.json composer run-script test:phpstan'
+
+   # .Composer Validation
+   $COMPOSE exec -T php sh -c 'COMPOSER=composer.script.json composer run-script check:composer-strict'
+
+   # .YAML Validation
+   $COMPOSE exec -T --user nginx web sh -c 'npx js-yaml .github/workflows/lint.yml 2>&1'
+   $COMPOSE exec -T --user nginx web sh -c 'npx js-yaml .github/workflows/tests.yml 2>&1'
+
+else
+   echo "Running in Local Mode..."
+
+   # .Fix Laravel Pint (Formatting)
+   COMPOSER=composer.script.json composer run-script fix:pint
+
+   # .Test PHPStan
+   COMPOSER=composer.script.json composer run-script test:phpstan
+
+   # .Composer Validation
+   COMPOSER=composer.script.json composer run-script check:composer-strict
+
+   # .YAML Validation
+   npx js-yaml .github/workflows/lint.yml
+   npx js-yaml .github/workflows/tests.yml
+fi
+
+git add .
+
+echo "Style fixed and staged!"

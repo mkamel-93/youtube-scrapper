@@ -3,15 +3,23 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "clear-build": "rm -rf public/build",
+        "build": "npm run clear-build && vite build",
+        "dev": "npm run clear-build && vite",
+        "prepare": "husky",
+        "test:blade": "npx blade-formatter 'resources/views/**/*.blade.php' --check-formatted",
+        "fix:blade": "npx blade-formatter 'resources/views/**/*.blade.php' --write"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
         "axios": "^1.11.0",
+        "autoprefixer": "^10.4.20",
+        "blade-formatter": "^1.44.4",
         "concurrently": "^9.0.1",
+        "husky": "^9.1.7",
         "laravel-vite-plugin": "^2.0.0",
         "tailwindcss": "^4.0.0",
-        "vite": "^7.0.7"
+        "vite": "^7.0.7",
+        "vite-plugin-manifest-sri": "^0.2.0"
     }
 }
