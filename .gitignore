@@ -1,0 +1,121 @@
+# ============================================================
+# 🧠 Environment and Configuration
+# ============================================================
+.env
+.env.*
+!.env.example
+!.env.docker
+!.env.deploy
+!.env.dusk
+auth.json
+phpunit.xml.bak
+phpunit.xml.local
+/.htaccess
+**/*.bkp
+/*.dtmp
+
+# ============================================================
+# 🧩 Vendor & Node Dependencies
+# ============================================================
+/vendor/
+/node_modules/
+/bun.lockb
+
+# ============================================================
+# 🏗️ Build and Compiled Assets (Vite / Mix)
+# ============================================================
+/public/build
+/public/storage
+/public/hot
+/public/mix-manifest.json
+/public/sitemap.xml
+/public/robots.txt
+/.vite
+/bootstrap/ssr
+
+# ============================================================
+# 🗄️ Storage and Cache (runtime-generated)
+# ============================================================
+/storage/app/public
+/storage/framework/cache
+/storage/framework/sessions
+/storage/framework/views
+/storage/framework/testing
+/storage/framework/cache/data
+/storage/logs
+/storage/pail
+/storage/*.key
+/storage/.*
+/bootstrap/cache/*
+
+# Keep the directory structure, but ignore the contents
+!storage/framework/cache/.gitignore
+!storage/framework/sessions/.gitignore
+!storage/framework/views/.gitignore
+!storage/logs/.gitignore
+
+# ============================================================
+# 🧪 Testing and Quality Tools
+# ============================================================
+.phpunit.cache/
+.phpunit.result.cache
+.php-cs-fixer.cache
+.eslintcache
+/tests/Browser/screenshots/*
+/tests/Browser/console/*
+
+# ============================================================
+# 🗄️ Database & Local Data
+# ============================================================
+*.sqlite
+*.sqlite-journal
+dump.rdb
+
+# ============================================================
+# 🧰 IDEs, Editors, and Tools
+# ============================================================
+/.idea/
+/.vscode/
+/.fleet/
+/.nova/
+/.zed/
+.phpactor.json
+.phpstorm.meta.php
+sftp-config.json
+*.swp
+
+# ============================================================
+# ⚙️ Docker, CI/CD, and Local Development
+# ============================================================
+/.dockerignore
+.lp
+
+# ============================================================
+# 🧹 Logs and Temporary Files
+# ============================================================
+.docker/logs/*
+error_log
+public/error_log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ============================================================
+# 🪟 System & OS Files
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# 🧪 Local Helper Scripts and Temporary Files
+# ============================================================
+_ide_helper.php
+_ide_helper_models.php
+_ide_helper_models.json
+.phpstorm.meta.php/
+
+# Temporary composer variants
+composer.*.lock
+composer.local.json
