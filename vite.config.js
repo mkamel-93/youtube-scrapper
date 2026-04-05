@@ -25,7 +25,11 @@ export default defineConfig(({ mode }) => {
                     'resources/css/app.css',
                     'resources/js/app.js'
                 ],
-                refresh: true
+                refresh: [
+                    'resources/views/**/*.blade.php',
+                    'app/**/*.php',
+                    'routes/**/*.php',
+                ]
             }),
             ...(isProduction ? [manifestSRI()] : []),
             tailwindcss(),
