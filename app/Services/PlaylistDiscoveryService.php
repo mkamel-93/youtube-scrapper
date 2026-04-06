@@ -23,7 +23,7 @@ class PlaylistDiscoveryService
      */
     public function searchPlaylists(array $categories): array
     {
-        $titlesMap = $this->generator->generateTitlesBatch($categories, 1);
+        $titlesMap = $this->generator->generateTitlesBatch($categories, 10);
 
         $discoveredPlaylists = $this->discoverPlaylistsFromTitles($titlesMap);
 
@@ -54,7 +54,7 @@ class PlaylistDiscoveryService
 
         foreach ($titlesMap as $category => $titles) {
             foreach ($titles as $title) {
-                $searchResults = $this->videoProvider->searchPlaylists($title, 10);
+                $searchResults = $this->videoProvider->searchPlaylists($title, 2);
 
                 foreach ($searchResults as $playlist) {
                     if (in_array($playlist['uuid'], $seenUuids, true)) {
