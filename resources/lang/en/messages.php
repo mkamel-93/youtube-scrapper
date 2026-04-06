@@ -28,6 +28,7 @@ return [
                     'title' => 'Enter Categories',
                     'placeholder' => 'Write category name then press Enter',
                 ],
+                'search-titles' => 'Search Titles',
                 'buttons' => [
                     'start' => 'Start',
                     'stop' => 'Stop',

@@ -50,16 +50,14 @@
         x-data="playlistSearchForm"
     >
         <!-- Search Form -->
-        <section class="-mt-20">
+        <section class="-mt-20 p-8 bg-white rounded-2xl shadow-xl">
             <form
-                class="bg-white rounded-2xl shadow-xl p-8"
                 action="{{ route('playlists.start') }}"
                 method="POST"
                 @submit.prevent="submitForm"
             >
                 @csrf
                 <div class="flex flex-col md:flex-row gap-8">
-
                     <div class="w-full md:w-2/3">
                         <label class="block text-slate-500 text-sm font-bold mb-3">
                             {{ __('messages.pages.playlists.fields.search-box.title') }}
@@ -140,6 +138,51 @@
                     </div>
                 </div>
             </form>
+
+            <!-- Search Titles Display -->
+            <div
+                class="mt-4 pt-4 border-t border-slate-100"
+                x-show="Object.keys(searchedTitles).length > 0"
+                x-cloak
+            >
+                <div class="flex items-center gap-2 mb-3">
+                    <h3 class="text-slate-400 text-xs font-bold uppercase tracking-wider">
+                        {{ __('messages.pages.playlists.fields.search-titles') }}
+                    </h3>
+                    <span
+                        class="bg-slate-100 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-full"
+                        x-text="Object.keys(searchedTitles).length"
+                    ></span>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <template
+                        x-for="(titles, category) in searchedTitles"
+                        :key="category"
+                    >
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span
+                                class="text-[11px] font-bold text-slate-400 uppercase bg-slate-50 px-2 py-0.5 rounded border border-slate-100"
+                                x-text="category"
+                            ></span>
+
+                            <div class="flex flex-wrap gap-1.5">
+                                <template
+                                    x-for="(title, index) in titles"
+                                    :key="index"
+                                >
+                                    <span
+                                        class="text-xs text-slate-600 bg-white border border-slate-200 px-2 py-0.5 rounded-md hover:border-blue-300 transition-colors cursor-default"
+                                    >
+                                        <span class="text-slate-300 mr-0.5">#</span>
+                                        <span x-text="title"></span>
+                                    </span>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
         </section>
 
         <!-- Messages -->
@@ -226,7 +269,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <template
                     x-for="playlist in filteredPlaylists"
-                    :key="playlist.id"
+                    :key="playlist.uuid"
                 >
                     <div
                         class="bg-white rounded-2xl shadow-md border border-slate-100 hover:shadow-lg transition-all overflow-hidden">
@@ -261,7 +304,7 @@
                                 x-text="playlist.title"
                             ></h3>
 
-                            <!-- Instructor -->
+                            <!-- channel_name -->
                             <div class="flex items-center gap-2 text-slate-500 text-sm mb-4">
                                 <svg
                                     class="w-4 h-4"
@@ -276,11 +319,15 @@
                                         d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
                                     />
                                 </svg>
-                                <span x-text="playlist.instructor"></span>
+                                <span x-text="playlist.channel_name"></span>
                             </div>
 
                             <!-- Footer: Views + Category -->
                             <div class="flex justify-between items-center pt-3 border-t border-slate-100">
+                                <span
+                                    class="bg-slate-50 text-slate-600 text-xs font-bold px-3 py-1 rounded-full border border-slate-200"
+                                    x-text="playlist.category"
+                                ></span>
                                 <div class="flex items-center gap-1 text-slate-400 text-xs">
                                     <svg
                                         class="w-4 h-4"
@@ -303,10 +350,6 @@
                                     <span x-text="(playlist.views || 0).toLocaleString()"></span>
                                     {{ __('messages.pages.playlists.card.views_label') }}
                                 </div>
-                                <span
-                                    class="bg-slate-50 text-slate-600 text-xs font-bold px-3 py-1 rounded-full border border-slate-200"
-                                    x-text="playlist.category"
-                                ></span>
                             </div>
                         </div>
                     </div>
@@ -331,6 +374,7 @@
                 // Results State
                 searchedCategories: [],
                 searchedPlaylists: [],
+                searchedTitles: {},
 
                 activeTab: null,
 
@@ -393,6 +437,7 @@
                         if (response.data.success) {
                             this.searchedPlaylists = response.data.data.playlists;
                             this.searchedCategories = response.data.data.categories;
+                            this.searchedTitles = response.data.data.titles;
                             // this.selectedCategories = [];
                             this.hasSearched = true;
                         }

@@ -37,8 +37,23 @@ return [
         ],
     ],
 
+    'content_generator' => [
+        'driver' => env('CONTENT_GENERATOR_DRIVER', 'gemini'),
+    ],
+
+    'video_generator' => [
+        'driver' => env('VIDEO_GENERATOR_DRIVER', 'youtube'),
+    ],
+
+    'gemini' => [
+        'api_key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'),
+        'base_url' => env('GEMINI_BASE_URL', 'https://generativelanguage.googleapis.com/v1beta/models'),
+    ],
+
     'youtube' => [
         'api_key' => env('YOUTUBE_API_KEY'),
+        'base_url' => env('YOUTUBE_BASE_URL', 'https://www.googleapis.com/youtube/v3'),
     ],
 
 ];

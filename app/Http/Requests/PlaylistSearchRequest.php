@@ -51,13 +51,13 @@ class PlaylistSearchRequest extends BaseFormRequest
     public function messages(): array
     {
         return [
-            'categories.required' => __('messages.validation.courses.categories.required'),
-            'categories.array' => __('messages.validation.courses.categories.invalid_format'),
-            'categories.min' => __('messages.validation.courses.categories.min'),
-            'categories.*.required' => __('messages.validation.courses.categories.item_required'),
-            'categories.*.string' => __('messages.validation.courses.categories.item_string'),
-            'categories.*.max' => __('messages.validation.courses.categories.item_max'),
-            'categories.*.distinct' => __('messages.validation.courses.categories.duplicate'),
+            'categories.required' => __('messages.validation.playlists.categories.required'),
+            'categories.array' => __('messages.validation.playlists.categories.invalid_format'),
+            'categories.min' => __('messages.validation.playlists.categories.min'),
+            'categories.*.required' => __('messages.validation.playlists.categories.item_required'),
+            'categories.*.string' => __('messages.validation.playlists.categories.item_string'),
+            'categories.*.max' => __('messages.validation.playlists.categories.item_max'),
+            'categories.*.distinct' => __('messages.validation.playlists.categories.duplicate'),
         ];
     }
 }

@@ -28,6 +28,7 @@ return [
                     'title' => 'أدخل التصنيفات',
                     'placeholder' => 'اكتب اسم التصنيف ثم اضغط على Enter',
                 ],
+                'search-titles' => 'الاسماء التى تم البحث بها',
                 'buttons' => [
                     'start' => 'ابدأ',
                     'stop' => 'إيقاف',
